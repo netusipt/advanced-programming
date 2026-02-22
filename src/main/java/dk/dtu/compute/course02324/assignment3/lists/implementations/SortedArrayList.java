@@ -15,12 +15,13 @@ import java.util.Comparator;
  */
 public class SortedArrayList<E extends Comparable<E>> extends ArrayList<E> implements SortedList<E> {
 
+
     @Override
     public boolean add(@NotNull E e) {
         if (e == null) {
             throw new IllegalArgumentException();
         }
-        int pos = findIndexToInsert(e);
+        int pos = this.findIndexToInsert(e);
         return super.add(pos, e);
     }
 
@@ -44,7 +45,7 @@ public class SortedArrayList<E extends Comparable<E>> extends ArrayList<E> imple
             throw new IllegalArgumentException();
         }
         int index = 0;
-        while (index < size() && get(index).compareTo(e) < 0) {
+        while (index < super.size() && super.get(index).compareTo(e) < 0) {
             index++;
         }
         return index;
@@ -54,5 +55,4 @@ public class SortedArrayList<E extends Comparable<E>> extends ArrayList<E> imple
     public void sort(@NotNull Comparator<? super E> c) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Operation sort(Comparator<? super E> c) not allowed on SortedLists");
     }
-
 }

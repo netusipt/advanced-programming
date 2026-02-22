@@ -58,6 +58,7 @@ public class ArrayList<E> implements List<E> {
         if (e == null) {
             throw new IllegalArgumentException();
         }
+
         if (pos >= this.size || pos < 0) {
             throw new IndexOutOfBoundsException();
         }

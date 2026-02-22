@@ -2,6 +2,8 @@ package dk.dtu.compute.course02324.assignment3.lists.uses;
 
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Objects;
+
 public class Person implements Comparable<Person> {
 
     final public String name;
@@ -11,7 +13,7 @@ public class Person implements Comparable<Person> {
     Person(@NotNull String name, @NotNull double weight) {
         if (name == null || weight <= 0) {
             throw new IllegalArgumentException("A persons must be initialized with a" +
-                    "(non null) name and an age greater than 0");
+                    "(non null) name and weight greater than 0");
         }
         this.name = name;
         this.weight = weight;
@@ -23,8 +25,11 @@ public class Person implements Comparable<Person> {
             throw new IllegalArgumentException("Argument of compareTo() must not be null");
         }
 
-        // TODO this must be implemented properly according
-        throw new UnsupportedOperationException("This operation is not yet implemented");
+        int nameComparison = this.name.compareTo(o.name);
+        if (nameComparison != 0) {
+            return nameComparison;
+        }
+        return Double.compare(this.weight, o.weight);
     }
 
     /**
@@ -53,21 +58,19 @@ public class Person implements Comparable<Person> {
      */
     @Override
     public boolean equals(Object o) {
-        return super.equals(o);
-
-        // TODO this must be implemented in accordance with the compareTo() method!
-        //      See lectures for course 02324!
-        //      Also add JavaDocs for @param and @return !
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Person)) {
+            return false;
+        }
+        Person person = (Person) o;
+        return Double.compare(person.weight, weight) == 0 && name.equals(person.name);
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
-
-        // TODO this must be implemented note that hashcode needs to be consistent
-        //      with equals (o1.equals(o1) implies o1.hashCode() == o2.hashCode())!
-        //      See lectures for course 02324
-        //      Also add JavaDocs should be added
+        return Objects.hash(name, weight);
     }
 
 

@@ -43,7 +43,6 @@ public class BubbleSort {
                     temp = list.get(i + 1);
                     list.set(i + 1, list.get(i));
                     list.set(i, temp);
-
                     swapped = true;
                 }
             }

@@ -37,6 +37,8 @@ public class PersonsGUI extends GridPane {
     private Label mostFrequentName;
     private Label labelPersonsList;
     private Label exceptionsLabel;
+    private Label nameLabel;
+    private Label weightLabel;
 
     private TextField nameField;
     private TextField weightField;
@@ -68,6 +70,7 @@ public class PersonsGUI extends GridPane {
     private void initGUI() {
         this.setVgap(5.0);
         this.setHgap(5.0);
+        this.setPadding(new Insets(10, 10, 10, 10));
 
         this.nameField = new TextField();
         this.nameField.setPrefColumnCount(5);
@@ -85,11 +88,13 @@ public class PersonsGUI extends GridPane {
         this.averageWeight = new Label("Average: -");
         this.labelPersonsList = new Label("Persons:");
         this.exceptionsLabel = new Label("Exceptions:");
+        this.nameLabel = new Label("Name:");
+        this.weightLabel = new Label("Weight:");
 
         this.exceptionsArea = new TextArea();
         this.exceptionsArea.setEditable(false);
         this.exceptionsArea.setWrapText(true);
-        this.exceptionsArea.setPrefRowCount(4);
+        this.exceptionsArea.setPrefRowCount(5);
         this.exceptionsArea.setPrefColumnCount(16);
 
         this.addButton = new Button("Add at the end of the list");
@@ -97,9 +102,13 @@ public class PersonsGUI extends GridPane {
         this.addAtIndexButton = new Button("Add at index");
         this.sortButton = new Button("Sort");
 
-        HBox nameAndWeightBox = new HBox(this.nameField, this.weightField);
-        nameAndWeightBox.setSpacing(5.0);
-        nameAndWeightBox.setAlignment(Pos.BASELINE_LEFT);
+        GridPane nameAndWeightPane = new GridPane();
+        nameAndWeightPane.setHgap(5.0);
+        nameAndWeightPane.setVgap(5.0);
+        nameAndWeightPane.add(this.nameLabel, 0, 0);
+        nameAndWeightPane.add(this.weightLabel, 1, 0);
+        nameAndWeightPane.add(this.nameField, 0, 1);
+        nameAndWeightPane.add(this.weightField, 1, 1);
 
         HBox indexAndAddAtIndexBox = new HBox(this.addAtIndexButton, this.indexField);
         indexAndAddAtIndexBox.setSpacing(5.0);
@@ -110,7 +119,7 @@ public class PersonsGUI extends GridPane {
         sortAndClearBox.setAlignment(Pos.BASELINE_LEFT);
 
         this.actionBox = new VBox(
-                nameAndWeightBox,
+                nameAndWeightPane,
                 this.addButton,
                 indexAndAddAtIndexBox,
                 sortAndClearBox,
@@ -120,6 +129,7 @@ public class PersonsGUI extends GridPane {
                 this.exceptionsArea
         );
         this.actionBox.setSpacing(5.0);
+        this.actionBox.setPadding(new Insets(0, 10, 0, 0));
 
         this.personsPane = new GridPane();
         this.personsPane.setPadding(new Insets(5));
@@ -129,16 +139,16 @@ public class PersonsGUI extends GridPane {
         this.scrollPane = new ScrollPane(this.personsPane);
         this.scrollPane.setMinWidth(300);
         this.scrollPane.setMaxWidth(300);
-        this.scrollPane.setMinHeight(300);
+        this.scrollPane.setMinHeight(285);
         this.scrollPane.setMaxHeight(300);
         this.scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         this.scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
-        this.personsList = new VBox(labelPersonsList, scrollPane);
+        this.personsList = new VBox(this.labelPersonsList, this.scrollPane);
         this.personsList.setSpacing(5.0);
 
         this.add(this.actionBox, 0, 0);
-        this.add(personsList, 1, 0);
+        this.add(this.personsList, 1, 0);
     }
 
     private void setButtonActions() {
@@ -180,8 +190,10 @@ public class PersonsGUI extends GridPane {
 
             } catch (NumberFormatException numberFormatException) {
                 this.showException("Weight and index have to be a number.");
-            } catch (IndexOutOfBoundsException exception) {
-                this.showException(exception.getMessage());
+            } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+                this.showException("Index out of bounds. Use a value between 0 and " + this.persons.size() + ".");
+            } catch (IllegalArgumentException illegalArgumentException) {
+                this.showException(illegalArgumentException.getMessage());
             }
             update();
         });
@@ -199,7 +211,7 @@ public class PersonsGUI extends GridPane {
         // to a Comparator by the GenericComparator above)
         this.sortButton.setOnAction(e -> {
             try {
-                persons.sort(comparator);
+                this.persons.sort(comparator);
                 this.clearException();
             } catch (UnsupportedOperationException exception) {
                 this.showException(exception.getMessage());
@@ -245,26 +257,26 @@ public class PersonsGUI extends GridPane {
             }
         }
 
-        this.mostFrequentName.setText("Most frequent: " + mostFrequentName);
+        this.mostFrequentName.setText("Most occurring name: " + maxFrequency + " x " + mostFrequentName);
 
 
-        personsPane.getChildren().clear();
+        this.personsPane.getChildren().clear();
         // adds all persons to the list in the personsPane (with
         // a delete button in front of it)
-        for (int i = 0; i < persons.size(); i++) {
-            Person person = persons.get(i);
+        for (int i = 0; i < this.persons.size(); i++) {
+            Person person = this.persons.get(i);
             Label personLabel = new Label(i + ": " + person.toString());
             Button deleteButton = new Button("Delete");
             deleteButton.setOnAction(
                     e -> {
-                        persons.remove(person);
+                        this.persons.remove(person);
                         update();
                     }
             );
             HBox entry = new HBox(deleteButton, personLabel);
             entry.setSpacing(5.0);
             entry.setAlignment(Pos.BASELINE_LEFT);
-            personsPane.add(entry, 0, i);
+            this.personsPane.add(entry, 0, i);
         }
     }
 

@@ -2,7 +2,7 @@ package dk.dtu.compute.course02324.assignment3.lists.uses;
 
 
 import dk.dtu.compute.course02324.assignment3.lists.implementations.GenericComparator;
-import dk.dtu.compute.course02324.assignment3.lists.types.List;
+import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -39,9 +39,13 @@ public class PersonsGUI extends GridPane {
     private Label exceptionsLabel;
     private Label nameLabel;
     private Label weightLabel;
+    private Label ageLabel;
+    private Label maxAge;
+    private Label minAge;
 
     private TextField nameField;
     private TextField weightField;
+    private TextField ageField;
     private TextField indexField;
     private TextArea exceptionsArea;
 
@@ -80,16 +84,23 @@ public class PersonsGUI extends GridPane {
         this.weightField.setPrefColumnCount(5);
         this.weightField.setPromptText("Weight");
 
+        this.ageField = new TextField();
+        this.ageField.setPrefColumnCount(5);
+        this.ageField.setPromptText("Age");
+
         this.indexField = new TextField();
         this.indexField.setPrefColumnCount(4);
         this.indexField.setPromptText("Index");
 
         this.mostFrequentName = new Label("Most frequent: -");
         this.averageWeight = new Label("Average: -");
+        this.maxAge = new Label("Max age:");
+        this.minAge = new Label("Min age:");
         this.labelPersonsList = new Label("Persons:");
         this.exceptionsLabel = new Label("Exceptions:");
         this.nameLabel = new Label("Name:");
         this.weightLabel = new Label("Weight:");
+        this.ageLabel = new Label("Age:");
 
         this.exceptionsArea = new TextArea();
         this.exceptionsArea.setEditable(false);
@@ -107,8 +118,10 @@ public class PersonsGUI extends GridPane {
         nameAndWeightPane.setVgap(5.0);
         nameAndWeightPane.add(this.nameLabel, 0, 0);
         nameAndWeightPane.add(this.weightLabel, 1, 0);
+        nameAndWeightPane.add(this.ageLabel, 2, 0);
         nameAndWeightPane.add(this.nameField, 0, 1);
         nameAndWeightPane.add(this.weightField, 1, 1);
+        nameAndWeightPane.add(this.ageField, 2, 1);
 
         HBox indexAndAddAtIndexBox = new HBox(this.addAtIndexButton, this.indexField);
         indexAndAddAtIndexBox.setSpacing(5.0);
@@ -125,6 +138,8 @@ public class PersonsGUI extends GridPane {
                 sortAndClearBox,
                 this.averageWeight,
                 this.mostFrequentName,
+                this.minAge,
+                this.maxAge,
                 this.exceptionsLabel,
                 this.exceptionsArea
         );
@@ -163,8 +178,8 @@ public class PersonsGUI extends GridPane {
 
         this.addButton.setOnAction(e -> {
             try {
-                if(!this.nameField.getText().isBlank() && !this.weightField.getText().isBlank()) {
-                    Person person = new Person(this.nameField.getText(), Integer.parseInt(this.weightField.getText()));
+                if(!this.nameField.getText().isBlank() && !this.weightField.getText().isBlank() && !this.ageField.getText().isBlank()) {
+                    Person person = new Person(this.nameField.getText(), Integer.parseInt(this.weightField.getText()), Integer.parseInt(this.ageField.getText()));
                     this.persons.add(person);
                     this.clearException();
                 } else {
@@ -180,8 +195,8 @@ public class PersonsGUI extends GridPane {
 
         this.addAtIndexButton.setOnAction(e -> {
             try {
-                if(!this.nameField.getText().isBlank() && !this.weightField.getText().isBlank() && !this.indexField.getText().isBlank()) {
-                    Person person = new Person(this.nameField.getText(), Integer.parseInt(this.weightField.getText()));
+                if(!this.nameField.getText().isBlank() && !this.weightField.getText().isBlank() && !this.indexField.getText().isBlank() && !this.ageField.getText().isBlank()) {
+                    Person person = new Person(this.nameField.getText(), Integer.parseInt(this.weightField.getText()), Integer.parseInt(this.ageField.getText()));
                     this.persons.add(Integer.parseInt(this.indexField.getText()), person);
                     this.clearException();
                 } else {
@@ -230,6 +245,32 @@ public class PersonsGUI extends GridPane {
         // makes sure that the GUI is updated accordingly
         double average = 0;
         HashMap<String, Integer> nameCounts = new HashMap<>();
+
+        Integer minAge, maxAge;
+
+        minAge = this.persons
+                .stream()
+                .map(Person::getAge)
+                .reduce((x, y) -> x < y ? x : y)
+                .orElse(-1);
+
+        maxAge = this.persons
+                .stream()
+                .map(Person::getAge)
+                .reduce((x, y) -> x > y ? x : y)
+                .orElse(-1);
+
+        if(minAge != -1) {
+            this.minAge.setText("Min age: " + minAge.toString());
+        } else {
+            this.minAge.setText("Min age: -");
+        }
+
+        if(maxAge != -1) {
+            this.maxAge.setText("Max age: " + maxAge.toString());
+        } else {
+            this.maxAge.setText("Max age: -");
+        }
 
         for (int i = 0; i < this.persons.size(); i++) {
             Person person = this.persons.get(i);

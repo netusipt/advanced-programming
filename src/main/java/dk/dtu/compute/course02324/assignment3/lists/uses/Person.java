@@ -87,4 +87,8 @@ public class Person implements Comparable<Person> {
     public double getWeight() {
         return this.weight;
     }
+
+    public String getName() {
+        return this.name;
+    }
 }

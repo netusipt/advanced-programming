@@ -19,6 +19,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * A GUI element that is allows the user to interact and
@@ -245,7 +246,9 @@ public class PersonsGUI extends GridPane {
     private void update() {
         // makes sure that the GUI is updated accordingly
         double average = 0;
-        HashMap<String, Integer> nameCounts = new HashMap<>();
+        HashMap<String, Long> nameCounts = this.persons
+                .stream()
+                .collect(Collectors.groupingBy(Person::getName, HashMap::new, Collectors.counting()));
 
         Integer minAge, maxAge;
 
@@ -269,8 +272,6 @@ public class PersonsGUI extends GridPane {
                 .average()
                 .orElse(-1);
 
-
-
         if(minAge != -1) {
             this.minAge.setText("Min age: " + minAge.toString());
         } else {
@@ -289,27 +290,17 @@ public class PersonsGUI extends GridPane {
             this.averageWeight.setText("Average: -");
         }
 
-
-        for (int i = 0; i < this.persons.size(); i++) {
-            Person person = this.persons.get(i);
-            if (!nameCounts.containsKey(person.name)) {
-                nameCounts.put(person.name, 1);
-            } else {
-                nameCounts.put(person.name, nameCounts.get(person.name) + 1);
-            }
-        }
-
         String mostFrequentName = "-";
-        int maxFrequency = 0;
+        long maxFrequency = 0;
 
-        for (Map.Entry<String, Integer> entry : nameCounts.entrySet()) {
-            if (maxFrequency < entry.getValue()) {
-                mostFrequentName = entry.getKey();
-                maxFrequency = entry.getValue();
-            }
-        }
+        Map.Entry<String, Long> mostOccurring = nameCounts
+                .entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())
+                .orElse(Map.entry("-", 0L));
 
-        this.mostFrequentName.setText("Most occurring name: " + maxFrequency + " x " + mostFrequentName);
+
+        this.mostFrequentName.setText("Most occurring name: " + mostOccurring.getKey() + " x " + mostOccurring.getValue());
 
 
         this.personsPane.getChildren().clear();

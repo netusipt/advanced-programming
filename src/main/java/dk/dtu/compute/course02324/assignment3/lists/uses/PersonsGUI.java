@@ -245,7 +245,7 @@ public class PersonsGUI extends GridPane {
      */
     private void update() {
         // makes sure that the GUI is updated accordingly
-        double average = 0;
+        double averageWeight = 0;
         HashMap<String, Long> nameCounts = this.persons
                 .stream()
                 .collect(Collectors.groupingBy(Person::getName, HashMap::new, Collectors.counting()));
@@ -265,7 +265,7 @@ public class PersonsGUI extends GridPane {
                 .orElse(-1);
 
 
-        average = this.persons
+        averageWeight = this.persons
                 .stream()
                 .map(Person::getWeight)
                 .mapToDouble(Double::doubleValue)
@@ -284,8 +284,8 @@ public class PersonsGUI extends GridPane {
             this.maxAge.setText("Max age: -");
         }
 
-        if(average != -1) {
-            this.averageWeight.setText("Average: " + average);
+        if(averageWeight != -1) {
+            this.averageWeight.setText("Average: " + averageWeight);
         } else {
             this.averageWeight.setText("Average: -");
         }

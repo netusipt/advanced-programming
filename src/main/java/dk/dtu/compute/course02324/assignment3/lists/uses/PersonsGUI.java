@@ -237,6 +237,7 @@ public class PersonsGUI extends GridPane {
 
     }
 
+
     /**
      * Updates the values of the GUI elements with the current values
      * from the list.
@@ -260,6 +261,16 @@ public class PersonsGUI extends GridPane {
                 .reduce((x, y) -> x > y ? x : y)
                 .orElse(-1);
 
+
+        average = this.persons
+                .stream()
+                .map(Person::getWeight)
+                .mapToDouble(Double::doubleValue)
+                .average()
+                .orElse(-1);
+
+
+
         if(minAge != -1) {
             this.minAge.setText("Min age: " + minAge.toString());
         } else {
@@ -272,20 +283,20 @@ public class PersonsGUI extends GridPane {
             this.maxAge.setText("Max age: -");
         }
 
+        if(average != -1) {
+            this.averageWeight.setText("Average: " + average);
+        } else {
+            this.averageWeight.setText("Average: -");
+        }
+
+
         for (int i = 0; i < this.persons.size(); i++) {
             Person person = this.persons.get(i);
-            average += person.weight;
             if (!nameCounts.containsKey(person.name)) {
                 nameCounts.put(person.name, 1);
             } else {
                 nameCounts.put(person.name, nameCounts.get(person.name) + 1);
             }
-        }
-        if (!this.persons.isEmpty()) {
-            average /= this.persons.size();
-            this.averageWeight.setText("Average: " + average);
-        } else {
-            this.averageWeight.setText("Average: -");
         }
 
         String mostFrequentName = "-";

@@ -83,4 +83,8 @@ public class Person implements Comparable<Person> {
     public void setAge(int age) {
         this.age = age;
     }
+
+    public double getWeight() {
+        return this.weight;
+    }
 }

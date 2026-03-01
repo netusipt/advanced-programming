@@ -54,6 +54,7 @@ public class PersonsGUI extends GridPane {
     private Button clearButton;
     private Button addAtIndexButton;
     private Button sortButton;
+    private Button timeButton;
 
     private List<Person> persons;
 
@@ -113,6 +114,8 @@ public class PersonsGUI extends GridPane {
         this.clearButton = new Button("Clear");
         this.addAtIndexButton = new Button("Add at index");
         this.sortButton = new Button("Sort");
+        this.timeButton = new Button("Time");
+
 
         GridPane nameAndWeightPane = new GridPane();
         nameAndWeightPane.setHgap(5.0);
@@ -128,7 +131,7 @@ public class PersonsGUI extends GridPane {
         indexAndAddAtIndexBox.setSpacing(5.0);
         indexAndAddAtIndexBox.setAlignment(Pos.BASELINE_LEFT);
 
-        HBox sortAndClearBox = new HBox(this.sortButton, this.clearButton);
+        HBox sortAndClearBox = new HBox(this.sortButton, this.clearButton, this.timeButton);
         sortAndClearBox.setSpacing(5.0);
         sortAndClearBox.setAlignment(Pos.BASELINE_LEFT);
 
@@ -233,6 +236,13 @@ public class PersonsGUI extends GridPane {
                 this.showException(exception.getMessage());
             }
             update();
+        });
+
+        this.timeButton.setOnAction(e -> {
+             this.persons.forEach(person -> person.setAge(person.getAge() + 1));
+             this.persons.forEach(person -> person.setWeight(person.getWeight() * (1 + (0.07/30))));
+             this.persons = this.persons.stream().filter(person -> !person.isDead()).toList();
+             update();
         });
 
 

@@ -8,7 +8,7 @@ public class Person implements Comparable<Person> {
 
     final public String name;
 
-    final public double weight;
+    public double weight;
 
     private Integer age;
 
@@ -45,7 +45,7 @@ public class Person implements Comparable<Person> {
         // This could be automatically generated, but this automatically
         // generated representation is a bit too verbose. Therefore, we
         // chose a simpler representation here.
-        return name + ", " + age + ", " + weight + "kg";
+        return name + ", " + age + " years, " + weight + "kg";
     }
 
     /*
@@ -88,7 +88,16 @@ public class Person implements Comparable<Person> {
         return this.weight;
     }
 
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
     public String getName() {
         return this.name;
     }
+
+    public boolean isDead() {
+        return this.age > 99;
+    }
+
 }
